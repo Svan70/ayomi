@@ -7,7 +7,7 @@ from .constants import Settings
 
 settings = Settings()
 
-engine = create_engine(settings.db_url, echo=True)
+engine = create_engine(settings.db_url)
 
 
 def get_session():
