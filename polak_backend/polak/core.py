@@ -3,7 +3,7 @@ from collections import deque
 from .constants import Expression, InvalidExpression, Operators
 
 
-def compute_expression(expression: Expression):
+def compute_expression(expression: Expression) -> float:
     stack: deque[Operators | float] = deque()
     expression_as_list = parse_expression(expression)
     for index, token in enumerate(expression_as_list):
