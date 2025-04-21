@@ -1,7 +1,9 @@
 import pytest
+from fastapi.testclient import TestClient
 
 from .constants import InvalidExpression, Operators
 from .core import compute_expression, parse_expression
+from .main import app
 
 
 class TestComputeExpression:
@@ -98,3 +100,20 @@ class TestParseExpression:
         """Test parsing an empty expression."""
         with pytest.raises(InvalidExpression):
             parse_expression("")
+
+
+class TestComputeExpressionRoute:
+
+    @pytest.fixture
+    def client(self):
+        """Create a test client for the FastAPI app."""
+        return TestClient(app)
+
+    def test_compute_expression_valid(self, client):
+        response = client.post("/compute-expression", json={"expression": "5 3 +"})
+        assert response.status_code == 200
+        assert response.json() == {"result": 8.0}
+
+    def test_compute_expression_invalid(self, client):
+        response = client.post("/compute-expression", json={"expression": "5 3 + - -"})
+        assert response.status_code == 400
