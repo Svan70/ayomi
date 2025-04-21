@@ -1,3 +1,7 @@
+"""
+Contain function to compute expression according to the Reverse Polish Notation
+"""
+
 from collections import deque
 
 from .constants import Expression, InvalidExpression, Operators
@@ -61,6 +65,8 @@ def _compute_operator(operator: str, *operandes):
         case Operators.MUL:
             return op1 * op2
         case Operators.DIV:
+            if op2 == 0:
+                raise InvalidExpression(f"Division by zero : {op1} / {op2}")
             return op1 / op2
         case Operators.POW:
             return op1**op2
