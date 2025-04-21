@@ -9,4 +9,8 @@ class Operators(StrEnum):
     POW = "**"
 
 
-Expression = type[str]
+type Expression = str
+
+
+class InvalidExpression(Exception):
+    pass
