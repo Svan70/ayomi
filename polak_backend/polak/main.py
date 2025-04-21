@@ -1,6 +1,3 @@
-import csv
-import io
-
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -8,7 +5,7 @@ from sqlmodel import select
 
 from .constants import Expression, InvalidExpression, Settings
 from .core import compute_expression
-from .database import SessionDep
+from .database import SessionDep, create_db_and_tables
 from .models import Operation, convert_operations_to_csv
 
 settings = Settings()
@@ -41,3 +38,8 @@ async def get_operations(session: SessionDep):
     )
     response.headers["Content-Disposition"] = "attachment; filename=operations.csv"
     return response
+
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
