@@ -19,3 +19,4 @@ class InvalidExpression(Exception):
 
 class Settings(BaseSettings):
     db_url: str = f"sqlite:///test_database.db" # Default value for testing
+    test_env: bool = True

@@ -21,3 +21,9 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
+
+
+if settings.test_env:
+    # Ensure the test DB is always set up correctly
+    # The following function won't erase data
+    create_db_and_tables()
