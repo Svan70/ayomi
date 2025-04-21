@@ -7,8 +7,7 @@ from .constants import Settings
 
 settings = Settings()
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(settings.db_url, connect_args=connect_args)
+engine = create_engine(settings.db_url, echo=True)
 
 
 def get_session():
