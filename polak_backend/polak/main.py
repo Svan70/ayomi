@@ -1,10 +1,15 @@
+import csv
+import io
+
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from sqlmodel import select
 
 from .constants import Expression, InvalidExpression, Settings
 from .core import compute_expression
 from .database import SessionDep
-from .models import Operation
+from .models import Operation, convert_operations_to_csv
 
 settings = Settings()
 app = FastAPI()
@@ -26,3 +31,13 @@ async def compute_expression_endpoint(payload: ExpressionPayload, session: Sessi
     session.commit()
 
     return {"result": result}
+
+
+@app.get("/operations")
+async def get_operations(session: SessionDep):
+    operations = session.exec(select(Operation)).all()
+    response = StreamingResponse(
+        iter([convert_operations_to_csv(operations)]), media_type="text/csv"
+    )
+    response.headers["Content-Disposition"] = "attachment; filename=operations.csv"
+    return response

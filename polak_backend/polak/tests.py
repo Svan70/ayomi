@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 from .constants import InvalidExpression, Operators
 from .core import compute_expression, parse_expression
 from .main import app
+from .models import Operation, convert_operations_to_csv
 
 
 class TestComputeExpression:
@@ -117,3 +118,35 @@ class TestComputeExpressionRoute:
     def test_compute_expression_invalid(self, client):
         response = client.post("/compute-expression", json={"expression": "5 3 + - -"})
         assert response.status_code == 400
+
+
+class TestConvertOperationsToCSV:
+
+    def test_empty_operations_list(self):
+        operations = []
+        csv_output = convert_operations_to_csv(operations)
+
+        expected_output = "id;expression;result\r\n"
+        assert csv_output == expected_output
+
+    def test_multiple_operations(self):
+        operations = [
+            Operation(id=1, expression="5 3 +", result=8.0),
+            Operation(id=2, expression="10 4 -", result=6.0),
+            Operation(id=3, expression="6 7 *", result=42.0),
+            Operation(id=4, expression="20 5 /", result=4.0),
+            Operation(id=5, expression="2 3 **", result=8.0),
+        ]
+
+        csv_output = convert_operations_to_csv(operations)
+
+        expected_output = (
+            "id;expression;result\r\n"
+            "1;5 3 +;8.0\r\n"
+            "2;10 4 -;6.0\r\n"
+            "3;6 7 *;42.0\r\n"
+            "4;20 5 /;4.0\r\n"
+            "5;2 3 **;8.0\r\n"
+        )
+
+        assert csv_output == expected_output
