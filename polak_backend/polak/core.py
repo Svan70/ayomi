@@ -32,7 +32,7 @@ def parse_expression(expression: Expression) -> list[str | float]:
     if not expression:
         raise InvalidExpression("Empty expression")
     final_list: list[str | float] = []
-    for elem in expression.split(" "):
+    for elem in expression.strip().split(" "):
         match elem:
             case "*":
                 final_list.append(Operators.MUL)
